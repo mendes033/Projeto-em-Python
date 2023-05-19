@@ -114,6 +114,19 @@ with webdriver.Chrome(service=service) as driver:
     busca_attempt = driver.find_element(By.XPATH, "/html/body/div[1]/header/div[1]/div/div/div[1]/div[3]/div/form/button").click()
     time.sleep(5)
 
+
+class Produto:
+
+    def __init__(self, nome, idade):
+
+        self.nome = nome
+
+        self.idade = idade
+
+    def falar(self):
+
+        print(f"O {self.nome} está falando.")
+
 # driver.quit()
 
 
