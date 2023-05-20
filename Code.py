@@ -104,7 +104,7 @@ with webdriver.Chrome(service=service) as driver:
             lista_produtos.append(
                 [nome_produto[0].text,
                 valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') or valor_promo[0].text.replace('R$ ', '').replace('.', '').replace(',', '.'),
-                valor_promo[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') if valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') else "",
+                valor_promo[0].text.replace('.', '').replace(',', '.') if valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') else "",
                 "",
                 ""]
                 )
@@ -118,8 +118,18 @@ with webdriver.Chrome(service=service) as driver:
     df['Valor Real'] = pd.to_numeric(df['Valor Real'])
     df['Valor Real'] = df['Valor Real'].astype(float)
 
-    print(df.sort_values('Valor Real'))
+df = df.sort_values('Valor Real')
+df['Valor Real'] = df['Valor Real'].astype(str)
+df['Valor Promo'] = df['Valor Promo'].astype(str)
 
+df['Valor Real'] = 'R$ ' + df['Valor Real'].map(str)
+# df['Valor Promo'] = 'R$ ' + df['Valor Promo'].map(str) if df['Valor Promo'] else df['Valor Promo']
+# df['Valor Real'] = p(df['Valor Real'])
+
+print(df)
+
+folder_path = "C:/Users/joaov/OneDrive/Imagens/" + produto + ".xlsx"
+df.to_excel(folder_path, index=False, header=True)
 
 
 
