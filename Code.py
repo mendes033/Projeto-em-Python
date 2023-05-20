@@ -100,7 +100,25 @@ with webdriver.Chrome(service=service) as driver:
         # temp_promo = driver.find_elements(By.XPATH, path_temp_promo)
         # link = driver.find_elements(By.XPATH, path_link)
 
-        lista_produtos.append(Produto(nome_produto[0].text, valor_real[0].text, valor_promo[0].text, "", ""))
+        try:
+            lista_produtos.append(
+                [nome_produto[0].text,
+                valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') or valor_promo[0].text.replace('R$ ', '').replace('.', '').replace(',', '.'),
+                valor_promo[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') if valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') else "",
+                "",
+                ""]
+                )
+        except:
+            i = -1
+
+    df = pd.DataFrame(lista_produtos, columns=['Nome', 'Valor Real', 'Valor Promo', 'Duração Promo', 'Link'])
+
+    # df['Valor Promo'] = pd.to_numeric(df['Valor Promo'])
+    # df['Valor Promo'] = df['Valor Promo'].astype(float)
+    df['Valor Real'] = pd.to_numeric(df['Valor Real'])
+    df['Valor Real'] = df['Valor Real'].astype(float)
+
+    print(df.sort_values('Valor Real'))
 
 
 
