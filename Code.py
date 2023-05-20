@@ -91,30 +91,37 @@ with webdriver.Chrome(service=service) as driver:
         path_nome = "/html/body/div[1]/div[1]/div[3]/div/div/div[2]/div/main/div["+str(i)+"]/a/div/button/div/h2/span"
         path_valor_real = "/html/body/div[1]/div[1]/div[3]/div/div/div[2]/div/main/div["+str(i)+"]/a/div/div[1]/span[1]"
         path_valor_promo = "/html/body/div[1]/div[1]/div[3]/div/div/div[2]/div/main/div["+str(i)+"]/a/div/div[1]/span[2]"
-        # path_temp_promo = "/html/body/div[1]/div[1]/div[3]/div/div/div[2]/div/main/div["+str(i)+"]/div[2]/div[2]/div/div[2]/div/span"
-        # path_link = "/html/body/div[1]/div[1]/div[3]/div/div/div[2]/div/main/div["+str(i)+"]/a"
+        path_temp_promo = "/html/body/div[1]/div[1]/div[3]/div/div/div[2]/div/main/div["+str(i)+"]/div[2]/div[2]/div/div[2]/div/span[contains(@class,'countdownOffer')]"
+        path_link = "/html/body/div[1]/div[1]/div[3]/div/div/div[2]/div/main/div["+str(i)+"]/a"
 
         nome_produto = driver.find_elements(By.XPATH, path_nome)
         valor_real = driver.find_elements(By.XPATH, path_valor_real)
         valor_promo = driver.find_elements(By.XPATH, path_valor_promo)
-        # temp_promo = driver.find_elements(By.XPATH, path_temp_promo)
-        # link = driver.find_elements(By.XPATH, path_link)
+        temp_promo = driver.find_elements(By.XPATH, path_temp_promo)
+        links = driver.find_elements(By.XPATH, path_link)
+        link = ''
+        tp = ''
+
+        for l in links:
+            link = l.get_attribute('href')
+
+        
+        for tp in temp_promo:
+            tp = tp.text
 
         try:
             lista_produtos.append(
                 [nome_produto[0].text,
                 valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') or valor_promo[0].text.replace('R$ ', '').replace('.', '').replace(',', '.'),
                 valor_promo[0].text.replace('.', '').replace(',', '.') if valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') else "",
-                "",
-                ""]
+                tp,
+                link]
                 )
         except:
             i = -1
 
     df = pd.DataFrame(lista_produtos, columns=['Nome', 'Valor Real', 'Valor Promo', 'Duração Promo', 'Link'])
 
-    # df['Valor Promo'] = pd.to_numeric(df['Valor Promo'])
-    # df['Valor Promo'] = df['Valor Promo'].astype(float)
     df['Valor Real'] = pd.to_numeric(df['Valor Real'])
     df['Valor Real'] = df['Valor Real'].astype(float)
 
@@ -123,8 +130,6 @@ df['Valor Real'] = df['Valor Real'].astype(str)
 df['Valor Promo'] = df['Valor Promo'].astype(str)
 
 df['Valor Real'] = 'R$ ' + df['Valor Real'].map(str)
-# df['Valor Promo'] = 'R$ ' + df['Valor Promo'].map(str) if df['Valor Promo'] else df['Valor Promo']
-# df['Valor Real'] = p(df['Valor Real'])
 
 print(df)
 
