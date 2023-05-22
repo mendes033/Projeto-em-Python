@@ -124,12 +124,6 @@ df = pd.DataFrame(columns=['Nome', 'Valor Real', 'Valor Promo', 'Duração Promo
 
 for produto in lista_produtos:
    df.loc[len(df)] = [produto.nome, produto.valor_real, produto.valor_promo, produto.temp_promo, produto.link]
-#    df = pd.concat([df, pd.DataFrame([produto])], ignore_index=True)
-#    df = df.append([produto.nome, produto.valor_real, produto.valor_promo, produto.temp_promo, produto.link],ignore_index=True)
-
-# print(df)
-
-# df = pd.DataFrame(lista_produtos, columns=['Nome', 'Valor Real', 'Valor Promo', 'Duração Promo', 'Link'])
 
 df['Valor Real'] = pd.to_numeric(df['Valor Real'])
 df['Valor Real'] = df['Valor Real'].astype(float)
