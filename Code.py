@@ -74,10 +74,10 @@ with webdriver.Chrome(service=service) as driver:
     time.sleep(5)
 
     # produto = str(input("Digite o nome do produto: "))
-    produto = "Fone HyperX"
+    filter = "Fone HyperX"
 
     busca = driver.find_element(By.ID , "input-busca")
-    busca.send_keys(produto)
+    busca.send_keys(filter)
 
     busca_attempt = driver.find_element(By.XPATH, "/html/body/div[1]/header/div[1]/div/div/div[1]/div[3]/div/form/button").click()
     time.sleep(5)
@@ -111,19 +111,28 @@ with webdriver.Chrome(service=service) as driver:
 
         try:
             lista_produtos.append(
-                [nome_produto[0].text,
+                Produto(nome_produto[0].text,
                 valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') or valor_promo[0].text.replace('R$ ', '').replace('.', '').replace(',', '.'),
                 valor_promo[0].text.replace('.', '').replace(',', '.') if valor_real[0].text.replace('R$ ', '').replace('.', '').replace(',', '.') else "",
                 tp,
-                link]
-                )
+                link
+                ))
         except:
             i = -1
 
-    df = pd.DataFrame(lista_produtos, columns=['Nome', 'Valor Real', 'Valor Promo', 'Duração Promo', 'Link'])
+df = pd.DataFrame(columns=['Nome', 'Valor Real', 'Valor Promo', 'Duração Promo', 'Link'])
 
-    df['Valor Real'] = pd.to_numeric(df['Valor Real'])
-    df['Valor Real'] = df['Valor Real'].astype(float)
+for produto in lista_produtos:
+   df.loc[len(df)] = [produto.nome, produto.valor_real, produto.valor_promo, produto.temp_promo, produto.link]
+#    df = pd.concat([df, pd.DataFrame([produto])], ignore_index=True)
+#    df = df.append([produto.nome, produto.valor_real, produto.valor_promo, produto.temp_promo, produto.link],ignore_index=True)
+
+# print(df)
+
+# df = pd.DataFrame(lista_produtos, columns=['Nome', 'Valor Real', 'Valor Promo', 'Duração Promo', 'Link'])
+
+df['Valor Real'] = pd.to_numeric(df['Valor Real'])
+df['Valor Real'] = df['Valor Real'].astype(float)
 
 df = df.sort_values('Valor Real')
 df['Valor Real'] = df['Valor Real'].astype(str)
@@ -133,7 +142,7 @@ df['Valor Real'] = 'R$ ' + df['Valor Real'].map(str)
 
 print(df)
 
-folder_path = "C:/Users/joaov/OneDrive/Imagens/" + produto + ".xlsx"
+folder_path = "C:/Users/joaov/OneDrive/Imagens/" + filter + ".xlsx"
 df.to_excel(folder_path, index=False, header=True)
 
 
