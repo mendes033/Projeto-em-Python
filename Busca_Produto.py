@@ -76,7 +76,6 @@ with webdriver.Chrome(service=service) as driver:
 
     lista_produtos = []
     i = 0
-    nome_produto = ""
 
     while i>=0:
         i = i + 1
