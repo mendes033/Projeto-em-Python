@@ -10,9 +10,7 @@ import getpass
 
 
 class Produto:
-
     def __init__(self, nome, valor_real, valor_promo, temp_promo, link):
-
         self.nome = nome
         self.valor_real = valor_real
         self.valor_promo = valor_promo
